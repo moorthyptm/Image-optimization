@@ -12,27 +12,39 @@ export class PokeService {
   ): Observable<PokemonsResponse> {
     return this.getData(url).pipe(
       // ? its not required, We can also use pokemon id to retrieve image
-      switchMap((response) =>
-        from(response.results).pipe(
-          mergeMap((item: any) =>
-            this.getData(item.url).pipe(
-              map((detail) => ({
-                ...item,
-                img: detail.sprites.other.home.front_default,
-              }))
-            )
-          ),
-          toArray(),
-          map((results) => ({
-            ...response,
-            results,
-          }))
-        )
-      )
+      // switchMap(this.mapImageUsingAPI.bind(this))
+      map(this.mapImageUsingID.bind(this))
     );
   }
 
   private getData(url: string): Observable<any> {
     return this.httpClient.get<any>(url);
+  }
+
+  mapImageUsingID(response: any) {
+    response.results = response.results.map((item: any) => {
+      const urlMap: string[] = item.url.split('/');
+      const id = urlMap[urlMap.length - 2];
+      return { ...item, img: `${id}.png` };
+    });
+    return response;
+  }
+
+  mapImageUsingAPI(response: any) {
+    return from(response.results).pipe(
+      mergeMap((item: any) =>
+        this.getData(item.url).pipe(
+          map((detail) => ({
+            ...item,
+            img: detail.sprites.other.home.front_default,
+          }))
+        )
+      ),
+      toArray(),
+      map((results) => ({
+        ...response,
+        results,
+      }))
+    );
   }
 }
