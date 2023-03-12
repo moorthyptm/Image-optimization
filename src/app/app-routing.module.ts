@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PokimonComponent } from './pokemon';
+import { PokemonComponent } from './pokemon';
 
 const routes: Routes = [
   {
     path: '',
-    component: PokimonComponent,
+    component: PokemonComponent,
   },
 ];
 

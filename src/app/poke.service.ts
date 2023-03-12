@@ -4,10 +4,10 @@ import { map, Observable } from 'rxjs';
 import { PokemonsResponse, PokemonsResponseModified } from './poke.model';
 
 @Injectable({ providedIn: 'root' })
-export class PokiService {
+export class PokeService {
   constructor(private httpClient: HttpClient) {}
 
-  getPokimons(
+  getPokemons(
     url = 'https://pokeapi.co/api/v2/pokemon'
   ): Observable<PokemonsResponseModified> {
     return this.getData(url).pipe(

@@ -5,11 +5,11 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PokimonComponent } from './pokemon';
+import { PokemonComponent } from './pokemon';
 
 @NgModule({
-  declarations: [AppComponent, PokimonComponent],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule,CommonModule],
+  declarations: [AppComponent, PokemonComponent],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, CommonModule],
   providers: [],
   bootstrap: [AppComponent],
 })

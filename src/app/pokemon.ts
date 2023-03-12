@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { PokemonsResponseModified } from './poke.model';
-import { PokiService } from './poke.service';
+import { PokeService } from './poke.service';
 
 @Component({
-  selector: 'app-pokimon',
+  selector: 'app-pokemon',
   template: `
     <div class="w-full p-4">
       <div class="sticky top-0 bg-white h-20 p-4 shadow-sm">
@@ -35,10 +35,12 @@ import { PokiService } from './poke.service';
             <img
               [src]="details.sprites.other.home.front_default"
               [alt]="pokemon.name"
+              width="512"
+              height="512"
             />
           </ng-container>
           <div
-            class="text-center font-extrabold text-transparent text-xl bg-clip-text bg-gradient-to-r from-sky-400 to-green-600 py-10"
+            class="text-center font-extrabold text-transparent text-xl bg-clip-text bg-gradient-to-r from-sky-600 to-green-600 py-10"
           >
             {{ pokemon.name | titlecase }}
           </div>
@@ -57,19 +59,19 @@ import { PokiService } from './poke.service';
     </ng-template>
   `,
 })
-export class PokimonComponent {
+export class PokemonComponent {
   pokemons$: Observable<PokemonsResponseModified>;
   next$!: Observable<string | null>;
   previous$!: Observable<string | null>;
 
-  constructor(private pokiService: PokiService) {
-    this.pokemons$ = this.pokiService.getPokimons();
+  constructor(private pokeService: PokeService) {
+    this.pokemons$ = this.pokeService.getPokemons();
     this.paginationState();
   }
 
   pagination(url: string | null): void {
     if (url) {
-      this.pokemons$ = this.pokiService.getPokimons(url);
+      this.pokemons$ = this.pokeService.getPokemons(url);
       this.paginationState();
     }
   }
