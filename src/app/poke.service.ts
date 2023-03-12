@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { from, map, mergeMap, Observable, of, switchMap, toArray } from 'rxjs';
+import { from, map, mergeMap, Observable, toArray } from 'rxjs';
 import { PokemonsResponse } from './model/poke.model';
 // ! Avoid using type any [its just for NgOptimizedImage demo]
 
