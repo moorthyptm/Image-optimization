@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { from, map, mergeMap, Observable, of, switchMap, toArray } from 'rxjs';
 import { PokemonsResponse } from './model/poke.model';
+// ! Avoid using type any [its just for NgOptimizedImage demo]
 
 @Injectable()
 export class PokeService {
@@ -21,7 +22,7 @@ export class PokeService {
     return this.httpClient.get<any>(url);
   }
 
-  mapImageUsingID(response: any) {
+  private mapImageUsingID(response: any): any {
     response.results = response.results.map((item: any) => {
       const urlMap: string[] = item.url.split('/');
       const id = urlMap[urlMap.length - 2];
@@ -30,7 +31,7 @@ export class PokeService {
     return response;
   }
 
-  mapImageUsingAPI(response: any) {
+  private mapImageUsingAPI(response: any): Observable<any> {
     return from(response.results).pipe(
       mergeMap((item: any) =>
         this.getData(item.url).pipe(
