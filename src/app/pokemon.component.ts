@@ -1,10 +1,19 @@
+import {
+  AsyncPipe,
+  NgFor,
+  NgIf,
+  NgTemplateOutlet,
+  TitleCasePipe,
+} from '@angular/common';
 import { Component } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { PokemonsResponseModified } from './poke.model';
+import { PokemonsResponseModified } from './model/poke.model';
 import { PokeService } from './poke.service';
 
 @Component({
   selector: 'app-pokemon',
+  standalone: true,
+  imports: [NgIf, NgFor, AsyncPipe, TitleCasePipe, NgTemplateOutlet],
   template: `
     <div class="w-full p-4">
       <div class="sticky top-0 bg-white h-20 p-4 shadow-sm">
@@ -76,7 +85,7 @@ export class PokemonComponent {
     }
   }
 
-  paginationState() {
+  paginationState(): void {
     this.next$ = this.pokemons$.pipe(
       map((pokemonsResponse) => pokemonsResponse.next)
     );

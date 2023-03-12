@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { PokemonsResponse, PokemonsResponseModified } from './poke.model';
+import { PokemonsResponse, PokemonsResponseModified } from './model/poke.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PokeService {
   constructor(private httpClient: HttpClient) {}
 
@@ -20,7 +20,7 @@ export class PokeService {
     );
   }
 
-  getData(url: string) {
+  getData(url: string): Observable<any> {
     return this.httpClient.get<any>(url);
   }
 }
