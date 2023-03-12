@@ -1,5 +1,3 @@
-import { Observable } from 'rxjs';
-
 export interface PokemonsResponse {
   count: number;
   next: null | string;
@@ -10,12 +8,5 @@ export interface PokemonsResponse {
 export interface Result {
   name: string;
   url: string;
-}
-
-interface ResultModified extends Result {
-  data: Observable<any>;
-}
-
-export interface PokemonsResponseModified extends PokemonsResponse {
-  results: ResultModified[];
+  img: string;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { PokemonsResponse, PokemonsResponseModified } from './model/poke.model';
+import { from, map, mergeMap, Observable, of, switchMap, toArray } from 'rxjs';
+import { PokemonsResponse } from './model/poke.model';
 
 @Injectable()
 export class PokeService {
@@ -9,18 +9,30 @@ export class PokeService {
 
   getPokemons(
     url = 'https://pokeapi.co/api/v2/pokemon'
-  ): Observable<PokemonsResponseModified> {
+  ): Observable<PokemonsResponse> {
     return this.getData(url).pipe(
-      map((data: PokemonsResponse) => {
-        data.results = data.results.map((pokemon) => {
-          return { ...pokemon, data: this.getData(pokemon.url) };
-        });
-        return data as PokemonsResponseModified;
-      })
+      // ? its not required, We can also use pokemon id to retrieve image
+      switchMap((response) =>
+        from(response.results).pipe(
+          mergeMap((item: any) =>
+            this.getData(item.url).pipe(
+              map((detail) => ({
+                ...item,
+                img: detail.sprites.other.home.front_default,
+              }))
+            )
+          ),
+          toArray(),
+          map((results) => ({
+            ...response,
+            results,
+          }))
+        )
+      )
     );
   }
 
-  getData(url: string): Observable<any> {
+  private getData(url: string): Observable<any> {
     return this.httpClient.get<any>(url);
   }
 }

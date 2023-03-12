@@ -7,7 +7,7 @@ import {
 } from '@angular/common';
 import { Component } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { PokemonsResponseModified } from './model/poke.model';
+import { PokemonsResponse } from './model/poke.model';
 import { PokeService } from './poke.service';
 
 @Component({
@@ -40,14 +40,12 @@ import { PokeService } from './poke.service';
           class="shadow-lg rounded-lg bg-white"
           *ngFor="let pokemon of pokemons.results"
         >
-          <ng-container *ngIf="pokemon.data | async as details">
-            <img
-              [src]="details.sprites.other.home.front_default"
-              [alt]="pokemon.name"
-              width="512"
-              height="512"
-            />
-          </ng-container>
+          <img
+            [src]="pokemon.img"
+            [alt]="pokemon.name"
+            width="512"
+            height="512"
+          />
           <div
             class="text-center font-extrabold text-transparent text-xl bg-clip-text bg-gradient-to-r from-sky-600 to-green-600 py-10"
           >
@@ -69,7 +67,7 @@ import { PokeService } from './poke.service';
   `,
 })
 export class PokemonComponent {
-  pokemons$: Observable<PokemonsResponseModified>;
+  pokemons$: Observable<PokemonsResponse>;
   next$!: Observable<string | null>;
   previous$!: Observable<string | null>;
 
