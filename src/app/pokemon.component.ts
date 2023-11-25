@@ -4,10 +4,12 @@ import {
   NgTemplateOutlet,
   TitleCasePipe,
 } from '@angular/common';
-import { Component } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { PokemonsResponse, PokemonsResponseExtends } from './model/poke.model';
+import { Component, Injector, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { PokeService } from './poke.service';
+import { BehaviorSubject, switchMap } from 'rxjs';
+
+const DEFAULT_POKEMON_FETCH_URL = 'https://pokeapi.co/api/v2/pokemon';
 
 @Component({
   selector: 'app-pokemon',
@@ -20,13 +22,13 @@ import { PokeService } from './poke.service';
           <ng-container
             *ngTemplateOutlet="
               paginationTemplate;
-              context: { url: previous$ | async, btnText: 'Previous' }
+              context: { url: previous(), btnText: 'Previous' }
             "
           ></ng-container>
           <ng-container
             *ngTemplateOutlet="
               paginationTemplate;
-              context: { url: next$ | async, btnText: 'Next' }
+              context: { url: next(), btnText: 'Next' }
             "
           ></ng-container>
         </div>
@@ -382,17 +384,14 @@ import { PokeService } from './poke.service';
       culpa autem necessitatibus ab, obcaecati repellat reiciendis deserunt,
       facilis pariatur molestias.
       <ng-container
-        *ngTemplateOutlet="
-          pokemonsTemplate;
-          context: { pokemons: pokemons$ | async }
-        "
+        *ngTemplateOutlet="pokemonsTemplate; context: { pokemons: pokemons() }"
       ></ng-container>
     </div>
     <ng-template #pokemonsTemplate let-pokemons="pokemons">
       <ul
         class="clear-both grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 rounded-md shadow-md mt-10"
       >
-        @for (pokemon of pokemons?.results; track pokemon) {
+        @for (pokemon of pokemons?.results; track pokemon.id) {
         <li class="shadow-lg rounded-lg bg-white">
           <img
             [ngSrc]="pokemon.img"
@@ -422,28 +421,20 @@ import { PokeService } from './poke.service';
   `,
 })
 export class PokemonComponent {
-  pokemons$: Observable<PokemonsResponseExtends>;
-  next$!: Observable<string | null>;
-  previous$!: Observable<string | null>;
+  private pokeService = inject(PokeService);
+  private page$ = new BehaviorSubject<string>(DEFAULT_POKEMON_FETCH_URL);
 
-  constructor(private pokeService: PokeService) {
-    this.pokemons$ = this.pokeService.getPokemons();
-    this.paginationState();
-  }
+  private pokemonsRes$ = this.page$.pipe(
+    switchMap((url) => this.pokeService.getPokemons(url))
+  );
+
+  pokemons = toSignal(this.pokemonsRes$);
+  next = computed(() => this.pokemons()?.next ?? null);
+  previous = computed(() => this.pokemons()?.previous ?? null);
 
   pagination(url: string | null): void {
     if (url) {
-      this.pokemons$ = this.pokeService.getPokemons(url);
-      this.paginationState();
+      this.page$.next(url);
     }
-  }
-
-  paginationState(): void {
-    this.next$ = this.pokemons$.pipe(
-      map((pokemonsResponse) => pokemonsResponse.next)
-    );
-    this.previous$ = this.pokemons$.pipe(
-      map((pokemonsResponse) => pokemonsResponse.previous)
-    );
   }
 }

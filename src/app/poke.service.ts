@@ -12,9 +12,7 @@ import {
 export class PokeService {
   constructor(private httpClient: HttpClient) {}
 
-  getPokemons(
-    url = 'https://pokeapi.co/api/v2/pokemon'
-  ): Observable<PokemonsResponseExtends> {
+  getPokemons(url: string): Observable<PokemonsResponseExtends> {
     return this.getData<PokemonsResponse>(url).pipe(
       // ? its not required, We can also use pokemon id to retrieve image
       // switchMap(this.mapImageUsingAPI.bind(this))
@@ -23,7 +21,7 @@ export class PokeService {
   }
 
   private getData<T>(url: string): Observable<T> {
-    return this.httpClient.get<T>(url).pipe(tap(console.log));
+    return this.httpClient.get<T>(url);
   }
 
   private mapImageUsingID(response: PokemonsResponse): PokemonsResponseExtends {
