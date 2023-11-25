@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { from, map, mergeMap, Observable, toArray } from 'rxjs';
-import { PokemonsResponse } from './model/poke.model';
-// ! Avoid using type any [its just for NgOptimizedImage demo]
+import { from, map, mergeMap, Observable, switchMap, tap, toArray } from 'rxjs';
+import {
+  PokemonDetailResponse,
+  PokemonsResponse,
+  PokemonsResponseExtends,
+  ResultExtends,
+} from './model/poke.model';
 
 @Injectable()
 export class PokeService {
@@ -10,31 +14,33 @@ export class PokeService {
 
   getPokemons(
     url = 'https://pokeapi.co/api/v2/pokemon'
-  ): Observable<PokemonsResponse> {
-    return this.getData(url).pipe(
+  ): Observable<PokemonsResponseExtends> {
+    return this.getData<PokemonsResponse>(url).pipe(
       // ? its not required, We can also use pokemon id to retrieve image
       // switchMap(this.mapImageUsingAPI.bind(this))
       map(this.mapImageUsingID.bind(this))
     );
   }
 
-  private getData(url: string): Observable<any> {
-    return this.httpClient.get<any>(url);
+  private getData<T>(url: string): Observable<T> {
+    return this.httpClient.get<T>(url).pipe(tap(console.log));
   }
 
-  private mapImageUsingID(response: any): any {
-    response.results = response.results.map((item: any) => {
+  private mapImageUsingID(response: PokemonsResponse): PokemonsResponseExtends {
+    const results = response.results.map((item): ResultExtends => {
       const urlMap: string[] = item.url.split('/');
       const id = urlMap[urlMap.length - 2];
       return { ...item, img: `${id}.png` };
     });
-    return response;
+    return { ...response, results };
   }
 
-  private mapImageUsingAPI(response: any): Observable<any> {
+  private mapImageUsingAPI(
+    response: PokemonsResponse
+  ): Observable<PokemonsResponseExtends> {
     return from(response.results).pipe(
-      mergeMap((item: any) =>
-        this.getData(item.url).pipe(
+      mergeMap((item) =>
+        this.getData<PokemonDetailResponse>(item.url).pipe(
           map((detail) => ({
             ...item,
             img: detail.sprites.other.home.front_default,

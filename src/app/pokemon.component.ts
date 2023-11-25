@@ -6,7 +6,7 @@ import {
 } from '@angular/common';
 import { Component } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { PokemonsResponse } from './model/poke.model';
+import { PokemonsResponse, PokemonsResponseExtends } from './model/poke.model';
 import { PokeService } from './poke.service';
 
 @Component({
@@ -422,7 +422,7 @@ import { PokeService } from './poke.service';
   `,
 })
 export class PokemonComponent {
-  pokemons$: Observable<PokemonsResponse>;
+  pokemons$: Observable<PokemonsResponseExtends>;
   next$!: Observable<string | null>;
   previous$!: Observable<string | null>;
 
