@@ -8,6 +8,7 @@ export interface PokemonsResponse {
 export interface Result {
   name: string;
   url: string;
+  id: string;
 }
 
 export interface ResultExtends extends Result {

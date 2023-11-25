@@ -28,7 +28,7 @@ export class PokeService {
     const results = response.results.map((item): ResultExtends => {
       const urlMap: string[] = item.url.split('/');
       const id = urlMap[urlMap.length - 2];
-      return { ...item, img: `${id}.png` };
+      return { ...item, img: `${id}.png`, id };
     });
     return { ...response, results };
   }
@@ -39,10 +39,14 @@ export class PokeService {
     return from(response.results).pipe(
       mergeMap((item) =>
         this.getData<PokemonDetailResponse>(item.url).pipe(
-          map((detail) => ({
-            ...item,
-            img: detail.sprites.other.home.front_default,
-          }))
+          map((detail): ResultExtends => {
+            const urlMap: string[] = item.url.split('/');
+            return {
+              ...item,
+              img: detail.sprites.other.home.front_default,
+              id: urlMap[urlMap.length - 2],
+            };
+          })
         )
       ),
       toArray(),
