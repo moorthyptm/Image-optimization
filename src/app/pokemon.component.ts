@@ -397,6 +397,7 @@ import { PokeService } from './poke.service';
           <img
             [ngSrc]="pokemon.img"
             [alt]="pokemon.name"
+            disableOptimizedSrcset
             width="512"
             height="512"
           />
