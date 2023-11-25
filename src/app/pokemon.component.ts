@@ -1,7 +1,5 @@
 import {
   AsyncPipe,
-  NgFor,
-  NgIf,
   NgOptimizedImage,
   NgTemplateOutlet,
   TitleCasePipe,
@@ -14,14 +12,7 @@ import { PokeService } from './poke.service';
 @Component({
   selector: 'app-pokemon',
   standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    TitleCasePipe,
-    NgTemplateOutlet,
-    NgOptimizedImage,
-  ],
+  imports: [AsyncPipe, TitleCasePipe, NgTemplateOutlet, NgOptimizedImage],
   template: `
     <div class="w-full p-4">
       <div class="sticky top-0 bg-white h-20 p-4 shadow-sm">
@@ -40,7 +31,6 @@ import { PokeService } from './poke.service';
           ></ng-container>
         </div>
       </div>
-
       Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minima, pariatur
       nobis repellat autem in quia vitae voluptates sint tenetur nesciunt
       veniam? Beatae necessitatibus quas possimus nulla quisquam dolor nemo sit?
@@ -398,15 +388,12 @@ import { PokeService } from './poke.service';
         "
       ></ng-container>
     </div>
-
     <ng-template #pokemonsTemplate let-pokemons="pokemons">
       <ul
         class="clear-both grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 rounded-md shadow-md mt-10"
       >
-        <li
-          class="shadow-lg rounded-lg bg-white"
-          *ngFor="let pokemon of pokemons?.results"
-        >
+        @for (pokemon of pokemons?.results; track pokemon) {
+        <li class="shadow-lg rounded-lg bg-white">
           <img
             [ngSrc]="pokemon.img"
             [alt]="pokemon.name"
@@ -419,6 +406,7 @@ import { PokeService } from './poke.service';
             {{ pokemon.name | titlecase }}
           </div>
         </li>
+        }
       </ul>
     </ng-template>
     <ng-template #paginationTemplate let-data="url" let-text="btnText">
