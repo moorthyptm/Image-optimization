@@ -1,11 +1,13 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterModule, TitleCasePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="p-4 bg-sky-600">
       <div>
